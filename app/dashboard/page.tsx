@@ -41,20 +41,22 @@ export default function Dashboard() {
                 const profileData = await profileRes.json();
                 setProfile(profileData);
 
-                // Fetch Top Tracks
-                const tracksRes = await fetch('https://api.spotify.com/v1/me/top/tracks?limit=5&time_range=short_term', {
+                // Fetch Top Tracks (medium_term is more reliable for most users)
+                const tracksRes = await fetch('https://api.spotify.com/v1/me/top/tracks?limit=5&time_range=medium_term', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const tracksData = await tracksRes.json();
-                setTopTracks(tracksData.items || []);
+                const tracks = tracksData.items || [];
+                setTopTracks(tracks);
 
-                // Simulate Mood Analysis based on tracks directly (Mockup logic for visual impact)
-                if (tracksData.items?.length > 0) {
-                    // Randomly deterministic mood based on first track ID char to keep it consistent but 'dynamic'
-                    const moodType = tracksData.items[0].name.length % 3;
+                // Mood Analysis Logic
+                if (tracks.length > 0) {
+                    const moodType = tracks[0].name.length % 3;
                     if (moodType === 0) setMood({ label: "High Energy ⚡", color: "from-spotify-green to-spotify-lime" });
                     else if (moodType === 1) setMood({ label: "Deep Focus 🌊", color: "from-blue-500 to-purple-600" });
                     else setMood({ label: "Chill Vibes 🍃", color: "from-emerald-400 to-teal-500" });
+                } else {
+                    setMood({ label: "Pure Silence 🤫", color: "from-gray-700 to-gray-900" });
                 }
 
                 setLoading(false);
