@@ -42,19 +42,76 @@ export default function Dashboard() {
                 setProfile(profileData);
 
                 // Fetch Top Tracks (medium_term is more reliable for most users)
-                const tracksRes = await fetch('https://api.spotify.com/v1/me/top/tracks?limit=5&time_range=medium_term', {
+                const tracksRes = await fetch('https://api.spotify.com/v1/me/top/tracks?limit=20&time_range=medium_term', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const tracksData = await tracksRes.json();
                 const tracks = tracksData.items || [];
-                setTopTracks(tracks);
+                setTopTracks(tracks.slice(0, 5)); // Show top 5 but calculate from 20 to ensure data density
 
-                // Mood Analysis Logic
                 if (tracks.length > 0) {
-                    const moodType = tracks[0].name.length % 3;
-                    if (moodType === 0) setMood({ label: "High Energy ⚡", color: "from-spotify-green to-spotify-lime" });
-                    else if (moodType === 1) setMood({ label: "Deep Focus 🌊", color: "from-blue-500 to-purple-600" });
-                    else setMood({ label: "Chill Vibes 🍃", color: "from-emerald-400 to-teal-500" });
+                    // 1. Get IDs of all tracks for deep analysis
+                    const trackIds = tracks.map((t: SpotifyTrack) => t.id).join(',');
+
+                    // 2. Fetch Audio Features
+                    const featuresRes = await fetch(`https://api.spotify.com/v1/audio-features?ids=${trackIds}`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    const featuresData = await featuresRes.json();
+                    const features = featuresData.audio_features || [];
+
+                    // 3. Calculate Averages with precision across 6 distinct dimensions
+                    let stats = {
+                        energy: 0, valence: 0, danceability: 0,
+                        acousticness: 0, instrumentalness: 0, tempo: 0
+                    };
+                    let count = 0;
+
+                    features.forEach((f: any) => {
+                        if (f) {
+                            stats.energy += f.energy;
+                            stats.valence += f.valence;
+                            stats.danceability += f.danceability;
+                            stats.acousticness += f.acousticness;
+                            stats.instrumentalness += f.instrumentalness;
+                            stats.tempo += f.tempo;
+                            count++;
+                        }
+                    });
+
+                    if (count > 0) {
+                        const avg = {
+                            energy: stats.energy / count,
+                            valence: stats.valence / count,
+                            danceability: stats.danceability / count,
+                            acousticness: stats.acousticness / count,
+                            instrumentalness: stats.instrumentalness / count,
+                            tempo: stats.tempo / count
+                        };
+
+                        // 4. "Spotify Wrapped" Style Vibe Algorithms - Highly Specific
+                        if (avg.energy > 0.8 && avg.valence > 0.6) {
+                            setMood({ label: "Main Character Energy ✨", color: "from-yellow-400 via-orange-500 to-red-500" });
+                        } else if (avg.danceability > 0.7 && avg.valence > 0.6) {
+                            setMood({ label: "Late Night Discotheque 🪩", color: "from-pink-500 via-purple-500 to-indigo-500" });
+                        } else if (avg.acousticness > 0.7 && avg.valence < 0.4) {
+                            setMood({ label: "Cottagecore Melancholy 🍄", color: "from-green-700 via-emerald-600 to-teal-700" });
+                        } else if (avg.energy > 0.7 && avg.valence < 0.3) {
+                            setMood({ label: "Villain Arc 🖤", color: "from-red-900 via-gray-900 to-black" });
+                        } else if (avg.instrumentalness > 0.5) {
+                            setMood({ label: "Deep Focus Protocol 🧠", color: "from-blue-600 via-cyan-600 to-sky-700" });
+                        } else if (avg.valence > 0.7 && avg.energy < 0.5) {
+                            setMood({ label: "Golden Hour Glow 🌅", color: "from-orange-400 via-amber-400 to-yellow-300" });
+                        } else if (avg.energy < 0.3 && avg.valence < 0.3) {
+                            setMood({ label: "Doomscrolling Dissociation 🌫️", color: "from-gray-600 via-slate-700 to-zinc-800" });
+                        } else {
+                            // Fallback to quadrant system if no specific vibe matches
+                            if (avg.energy > 0.5 && avg.valence > 0.5) setMood({ label: "Joyful Optimist 🌻", color: "from-yellow-400 to-orange-500" });
+                            else if (avg.energy > 0.5) setMood({ label: "Fueled & Focused 🔥", color: "from-red-500 to-rose-700" });
+                            else if (avg.valence > 0.5) setMood({ label: "Peaceful Drifter 🍃", color: "from-emerald-400 to-teal-500" });
+                            else setMood({ label: "Wistful Dreamer 🌙", color: "from-indigo-500 to-blue-700" });
+                        }
+                    }
                 } else {
                     setMood({ label: "Pure Silence 🤫", color: "from-gray-700 to-gray-900" });
                 }
