@@ -16,15 +16,19 @@ export async function POST(req: Request) {
       
       **Data:**
       - Top Tracks: ${tracks.map((t: any) => `${t.name} by ${t.artists[0].name}`).join(", ")}
-      - Audio Stats (0-1 scale):
+      - Audio Stats (0-1 scale except Tempo):
         - Energy: ${stats.energy.toFixed(2)}
         - Valence (Happiness): ${stats.valence.toFixed(2)}
         - Danceability: ${stats.danceability.toFixed(2)}
+        - Acousticness: ${stats.acousticness.toFixed(2)}
+        - Instrumentalness: ${stats.instrumentalness.toFixed(2)}
+        - Tempo: ${Math.round(stats.tempo)} BPM
         
       **Task:**
-      1. Create a creative "Persona Title" (e.g., "The Midnight Driver", "Cottagecore Dreamer").
-      2. Write a short, poetic 2-sentence description of their current mental state / vibe.
-      3. Suggest a hex color code that matches this vibe.
+      1. Analyze these 6 dimensions to create a sophisticated "Sonic Persona" (like Spotify Wrapped).
+      2. Create a creative "Persona Title" (e.g., "The Midnight Driver", "Cottagecore Dreamer", "Goblin Mode").
+      3. Write a short, poetic 2-sentence description of their current mental state / vibe.
+      4. Suggest a hex color code that matches this vibe.
       
       **Output Format (JSON only):**
       {
