@@ -16,10 +16,11 @@ export function HeroSection() {
 
         const scope = 'user-read-private user-read-email user-top-read user-read-recently-played';
         const params = new URLSearchParams({
-            response_type: 'code',
+            response_type: 'token',
             client_id: clientId,
             scope: scope,
             redirect_uri: redirectUri,
+            show_dialog: 'true'
         });
 
         window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;

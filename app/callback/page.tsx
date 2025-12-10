@@ -11,15 +11,21 @@ function CallbackContent() {
     const error = searchParams.get('error');
 
     useEffect(() => {
-        if (code) {
-            // In a real app, we would exchange this code for a token here.
-            // For now, we'll just simulate a delay and show success.
-            const timer = setTimeout(() => {
-                router.push('/dashboard');
-            }, 3000);
-            return () => clearTimeout(timer);
+        // Handle Implicit Grant (Hash)
+        const hash = window.location.hash;
+        if (hash) {
+            const token = new URLSearchParams(hash.substring(1)).get('access_token');
+            if (token) {
+                localStorage.setItem('spotify_token', token);
+                setTimeout(() => router.push('/dashboard'), 1500);
+            }
         }
-    }, [code, router]);
+
+        // Handle Auth Code Error (Query)
+        if (error) {
+            console.error("Auth Error:", error);
+        }
+    }, [error, router]);
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen text-center px-4">
