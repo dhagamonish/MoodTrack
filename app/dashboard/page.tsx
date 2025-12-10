@@ -60,14 +60,16 @@ export default function Dashboard() {
                     const featuresData = await featuresRes.json();
                     const features = featuresData.audio_features || [];
 
-                    // 3. Calculate Averages with precision across 6 distinct dimensions
+                    // 3. Separate Measured vs Missing Tracks
                     let stats = {
                         energy: 0, valence: 0, danceability: 0,
                         acousticness: 0, instrumentalness: 0, tempo: 0
                     };
                     let count = 0;
+                    const missingTracks: string[] = [];
 
-                    features.forEach((f: any) => {
+                    features.forEach((f: any, index: number) => {
+                        const trackName = `${tracks[index].name} by ${tracks[index].artists[0].name}`;
                         if (f) {
                             stats.energy += f.energy;
                             stats.valence += f.valence;
@@ -76,11 +78,15 @@ export default function Dashboard() {
                             stats.instrumentalness += f.instrumentalness;
                             stats.tempo += f.tempo;
                             count++;
+                        } else {
+                            missingTracks.push(trackName);
                         }
                     });
 
+                    // Prepare averages (if any)
+                    let avg: any = null;
                     if (count > 0) {
-                        const avg = {
+                        avg = {
                             energy: stats.energy / count,
                             valence: stats.valence / count,
                             danceability: stats.danceability / count,
@@ -88,13 +94,20 @@ export default function Dashboard() {
                             instrumentalness: stats.instrumentalness / count,
                             tempo: stats.tempo / count
                         };
+                    }
 
-                        // 4. Call Gemini AI for Narrative Analysis
+                    // 4. Call Gemini AI (Hybrid Mode)
+                    // We call AI if we have ANY data (measured OR missing names)
+                    if (count > 0 || missingTracks.length > 0) {
                         try {
                             const aiRes = await fetch('/api/analyze-mood', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ tracks: tracks.slice(0, 5), stats: avg })
+                                body: JSON.stringify({
+                                    tracks: tracks.slice(0, 5),
+                                    stats: avg, // Can be null if count === 0
+                                    missing_tracks: missingTracks
+                                })
                             });
 
                             const aiData = await aiRes.json();
