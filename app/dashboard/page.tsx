@@ -133,24 +133,25 @@ export default function Dashboard() {
                                 else if (avg.valence > 0.5) setMood({ label: "Peaceful Drifter 🍃", color: "from-emerald-400 to-teal-500", description: "Floating downstream without a care." });
                                 else setMood({ label: "Wistful Dreamer 🌙", color: "from-indigo-500 to-blue-700", description: "Lost in thought, simpler times." });
                             }
-                        } else {
-                            // Case: Audio Features API returned empty (rare but possible)
-                            setMood({ label: "Mysterious Vibes 🔮", color: "from-purple-600 to-indigo-900", description: "Your musical taste is too elusive for our sensors." });
                         }
                     } else {
-                        setMood({ label: "Pure Silence 🤫", color: "from-gray-700 to-gray-900", description: "The sound of silence is deafening." });
+                        // Case: Audio Features API returned empty (rare but possible)
+                        setMood({ label: "Mysterious Vibes 🔮", color: "from-purple-600 to-indigo-900", description: "Your musical taste is too elusive for our sensors." });
                     }
-
-                    setLoading(false);
-                } catch (err) {
-                    console.error("Failed to fetch spotify data", err);
-                    localStorage.removeItem('spotify_token');
-                    router.push('/');
+                } else {
+                    setMood({ label: "Pure Silence 🤫", color: "from-gray-700 to-gray-900", description: "The sound of silence is deafening." });
                 }
+
+                setLoading(false);
+            } catch (err) {
+                console.error("Failed to fetch spotify data", err);
+                localStorage.removeItem('spotify_token');
+                router.push('/');
             }
+        }
 
         fetchData();
-        }, [router]);
+    }, [router]);
 
     const handleLogout = () => {
         localStorage.removeItem('spotify_token');
