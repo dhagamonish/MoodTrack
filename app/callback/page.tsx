@@ -14,9 +14,19 @@ function CallbackContent() {
         const exchangeToken = async () => {
             if (!code) return;
 
-            const codeVerifier = localStorage.getItem('spotify_code_verifier');
+            let codeVerifier;
+            try {
+                codeVerifier = localStorage.getItem('spotify_code_verifier');
+            } catch (storageError) {
+                alert("Browser Storage Error: Please disable 'Block third-party cookies' or 'Incognito' mode to log in.");
+                console.error("Storage access denied:", storageError);
+                return;
+            }
+
             if (!codeVerifier) {
                 console.error("No code verifier found");
+                alert("Login failed: Session expired. Please try again.");
+                router.push('/');
                 return;
             }
 
@@ -41,15 +51,21 @@ function CallbackContent() {
                 const data = await response.json();
 
                 if (data.access_token) {
-                    localStorage.setItem('spotify_token', data.access_token);
-                    // Clear the verifier for security
-                    localStorage.removeItem('spotify_code_verifier');
-                    router.push('/dashboard');
+                    try {
+                        localStorage.setItem('spotify_token', data.access_token);
+                        localStorage.removeItem('spotify_code_verifier');
+                        router.push('/dashboard');
+                    } catch (storageError) {
+                        alert("Browser Storage Error: Could not save login session.");
+                    }
                 } else {
                     console.error("Token exchange failed:", data);
+                    alert(`Login failed: ${data.error_description || data.error || "Unknown error"}`);
+                    router.push('/');
                 }
             } catch (err) {
                 console.error("Failed to exchange token", err);
+                alert("Network error during login. Please ensure you are online and redeployed.");
             }
         };
 
