@@ -11,21 +11,53 @@ function CallbackContent() {
     const error = searchParams.get('error');
 
     useEffect(() => {
-        // Handle Implicit Grant (Hash)
-        const hash = window.location.hash;
-        if (hash) {
-            const token = new URLSearchParams(hash.substring(1)).get('access_token');
-            if (token) {
-                localStorage.setItem('spotify_token', token);
-                setTimeout(() => router.push('/dashboard'), 1500);
+        const exchangeToken = async () => {
+            if (!code) return;
+
+            const codeVerifier = localStorage.getItem('spotify_code_verifier');
+            if (!codeVerifier) {
+                console.error("No code verifier found");
+                return;
             }
+
+            const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
+            const redirectUri = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI || 'http://localhost:3000/callback';
+
+            try {
+                const response = await fetch('https://accounts.spotify.com/api/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        client_id: clientId!,
+                        grant_type: 'authorization_code',
+                        code: code,
+                        redirect_uri: redirectUri,
+                        code_verifier: codeVerifier,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data.access_token) {
+                    localStorage.setItem('spotify_token', data.access_token);
+                    // Clear the verifier for security
+                    localStorage.removeItem('spotify_code_verifier');
+                    router.push('/dashboard');
+                } else {
+                    console.error("Token exchange failed:", data);
+                }
+            } catch (err) {
+                console.error("Failed to exchange token", err);
+            }
+        };
+
+        if (code) {
+            exchangeToken();
         }
 
-        // Handle Auth Code Error (Query)
-        if (error) {
-            console.error("Auth Error:", error);
-        }
-    }, [error, router]);
+    }, [code, router]);
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen text-center px-4">

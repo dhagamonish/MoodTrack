@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Music2 } from "lucide-react";
 
 export function HeroSection() {
-    const handleLogin = () => {
+    const handleLogin = async () => {
         const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
         const redirectUri = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI || 'http://localhost:3000/callback';
 
@@ -14,13 +14,21 @@ export function HeroSection() {
             return;
         }
 
+        // PKCE Flow
+        const { generateRandomString, generateCodeChallenge } = await import('@/lib/utils');
+        const codeVerifier = generateRandomString(128);
+        const codeChallenge = await generateCodeChallenge(codeVerifier);
+
+        localStorage.setItem('spotify_code_verifier', codeVerifier);
+
         const scope = 'user-read-private user-read-email user-top-read user-read-recently-played';
         const params = new URLSearchParams({
-            response_type: 'token',
+            response_type: 'code',
             client_id: clientId,
             scope: scope,
             redirect_uri: redirectUri,
-            show_dialog: 'true'
+            code_challenge_method: 'S256',
+            code_challenge: codeChallenge,
         });
 
         window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
