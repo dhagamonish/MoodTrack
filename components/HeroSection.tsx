@@ -7,7 +7,7 @@ import { ArrowRight, Play, Music2 } from "lucide-react";
 export function HeroSection() {
     const handleLogin = () => {
         const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
-        const redirectUri = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_REDIRECT_URI || 'http://localhost:3000/callback';
+        const redirectUri = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI || 'http://localhost:3000/callback';
 
         if (!clientId) {
             alert("Setup Required: Please add your NEXT_PUBLIC_SPOTIFY_CLIENT_ID to .env.local");
