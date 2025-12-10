@@ -89,31 +89,54 @@ export default function Dashboard() {
                             tempo: stats.tempo / count
                         };
 
-                        // 4. "Spotify Wrapped" Style Vibe Algorithms - Highly Specific
-                        if (avg.energy > 0.8 && avg.valence > 0.6) {
-                            setMood({ label: "Main Character Energy ✨", color: "from-yellow-400 via-orange-500 to-red-500" });
-                        } else if (avg.danceability > 0.7 && avg.valence > 0.6) {
-                            setMood({ label: "Late Night Discotheque 🪩", color: "from-pink-500 via-purple-500 to-indigo-500" });
-                        } else if (avg.acousticness > 0.7 && avg.valence < 0.4) {
-                            setMood({ label: "Cottagecore Melancholy 🍄", color: "from-green-700 via-emerald-600 to-teal-700" });
-                        } else if (avg.energy > 0.7 && avg.valence < 0.3) {
-                            setMood({ label: "Villain Arc 🖤", color: "from-red-900 via-gray-900 to-black" });
-                        } else if (avg.instrumentalness > 0.5) {
-                            setMood({ label: "Deep Focus Protocol 🧠", color: "from-blue-600 via-cyan-600 to-sky-700" });
-                        } else if (avg.valence > 0.7 && avg.energy < 0.5) {
-                            setMood({ label: "Golden Hour Glow 🌅", color: "from-orange-400 via-amber-400 to-yellow-300" });
-                        } else if (avg.energy < 0.3 && avg.valence < 0.3) {
-                            setMood({ label: "Doomscrolling Dissociation 🌫️", color: "from-gray-600 via-slate-700 to-zinc-800" });
-                        } else {
-                            // Fallback to quadrant system if no specific vibe matches
-                            if (avg.energy > 0.5 && avg.valence > 0.5) setMood({ label: "Joyful Optimist 🌻", color: "from-yellow-400 to-orange-500" });
-                            else if (avg.energy > 0.5) setMood({ label: "Fueled & Focused 🔥", color: "from-red-500 to-rose-700" });
-                            else if (avg.valence > 0.5) setMood({ label: "Peaceful Drifter 🍃", color: "from-emerald-400 to-teal-500" });
-                            else setMood({ label: "Wistful Dreamer 🌙", color: "from-indigo-500 to-blue-700" });
+                        // 4. Call Gemini AI for Narrative Analysis
+                        try {
+                            const aiRes = await fetch('/api/analyze-mood', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ tracks: tracks.slice(0, 5), stats: avg })
+                            });
+
+                            const aiData = await aiRes.json();
+
+                            if (aiData.persona) {
+                                setMood({
+                                    label: aiData.persona,
+                                    color: `from-[${aiData.hexColor}] to-black`,
+                                    description: aiData.description
+                                });
+                            } else {
+                                throw new Error("No persona returned");
+                            }
+                        } catch (aiError) {
+                            console.error("AI Analysis failed, falling back to local logic", aiError);
+
+                            // Fallback to local logic if AI fails
+                            if (avg.energy > 0.8 && avg.valence > 0.6) {
+                                setMood({ label: "Main Character Energy ✨", color: "from-yellow-400 via-orange-500 to-red-500", description: "You are the protagonist of a high-budget summer blockbuster." });
+                            } else if (avg.danceability > 0.7 && avg.valence > 0.6) {
+                                setMood({ label: "Late Night Discotheque 🪩", color: "from-pink-500 via-purple-500 to-indigo-500", description: "The night is young and so are you." });
+                            } else if (avg.acousticness > 0.7 && avg.valence < 0.4) {
+                                setMood({ label: "Cottagecore Melancholy 🍄", color: "from-green-700 via-emerald-600 to-teal-700", description: "Rain on a tin roof, old books, and memories." });
+                            } else if (avg.energy > 0.7 && avg.valence < 0.3) {
+                                setMood({ label: "Villain Arc 🖤", color: "from-red-900 via-gray-900 to-black", description: "Plotting world domination, one track at a time." });
+                            } else if (avg.instrumentalness > 0.5) {
+                                setMood({ label: "Deep Focus Protocol 🧠", color: "from-blue-600 via-cyan-600 to-sky-700", description: "Locked in. The world fades away." });
+                            } else if (avg.valence > 0.7 && avg.energy < 0.5) {
+                                setMood({ label: "Golden Hour Glow 🌅", color: "from-orange-400 via-amber-400 to-yellow-300", description: "Everything is going to be alright." });
+                            } else if (avg.energy < 0.3 && avg.valence < 0.3) {
+                                setMood({ label: "Doomscrolling Dissociation 🌫️", color: "from-gray-600 via-slate-700 to-zinc-800", description: "Staring at the ceiling, feeling the void." });
+                            } else {
+                                // Fallback to quadrant system if no specific vibe matches
+                                if (avg.energy > 0.5 && avg.valence > 0.5) setMood({ label: "Joyful Optimist 🌻", color: "from-yellow-400 to-orange-500", description: "Radiating positivity and good vibes." });
+                                else if (avg.energy > 0.5) setMood({ label: "Fueled & Focused 🔥", color: "from-red-500 to-rose-700", description: "Eyes on the prize. Unstoppable." });
+                                else if (avg.valence > 0.5) setMood({ label: "Peaceful Drifter 🍃", color: "from-emerald-400 to-teal-500", description: "Floating downstream without a care." });
+                                else setMood({ label: "Wistful Dreamer 🌙", color: "from-indigo-500 to-blue-700", description: "Lost in thought, simpler times." });
+                            }
                         }
                     }
                 } else {
-                    setMood({ label: "Pure Silence 🤫", color: "from-gray-700 to-gray-900" });
+                    setMood({ label: "Pure Silence 🤫", color: "from-gray-700 to-gray-900", description: "The sound of silence is deafening." });
                 }
 
                 setLoading(false);
