@@ -23,7 +23,7 @@ export default function Dashboard() {
     const [profile, setProfile] = useState<SpotifyProfile | null>(null);
     const [topTracks, setTopTracks] = useState<SpotifyTrack[]>([]);
     const [loading, setLoading] = useState(true);
-    const [mood, setMood] = useState({ label: "Analyzing...", color: "from-gray-500 to-gray-700" });
+    const [mood, setMood] = useState({ label: "Analyzing...", color: "from-gray-500 to-gray-700", description: "Connecting to your sonic consciousness..." });
 
     useEffect(() => {
         const token = localStorage.getItem('spotify_token');
@@ -180,8 +180,8 @@ export default function Dashboard() {
                         <h2 className="text-5xl md:text-7xl font-black text-white drop-shadow-lg tracking-tighter">
                             {mood.label}
                         </h2>
-                        <p className="mt-4 text-white/80 max-w-lg text-lg font-medium leading-relaxed">
-                            Based on your recent listening, you are gravitating towards sounds that amplify this emotional state.
+                        <p className="mt-4 text-white/80 max-w-lg text-lg font-medium leading-relaxed italic">
+                            "{mood.description}"
                         </p>
                     </div>
                 </motion.div>
