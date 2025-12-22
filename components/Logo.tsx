@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -6,11 +7,11 @@ import { motion } from 'framer-motion';
 
 export function Logo() {
     return (
-        <Link href="/" className="fixed top-8 left-8 z-[100] flex items-center gap-3 group">
+        <Link href="/" className="absolute top-8 left-8 z-[100] flex items-center group">
             <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="relative w-12 h-12 md:w-16 md:h-16"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="relative w-[280px] h-[70px]"
             >
                 <Image
                     src="/logo.png"
@@ -20,9 +21,6 @@ export function Logo() {
                     priority
                 />
             </motion.div>
-            <span className="text-xl font-black tracking-tighter text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:block">
-                MoodTrack
-            </span>
         </Link>
     );
 }
