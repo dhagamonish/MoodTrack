@@ -236,6 +236,32 @@ export default function Dashboard() {
                 />
             </section>
 
+            {/* Top Tracks / Sonic Signature */}
+            <section className="mb-12">
+                <h3 className="text-xl font-bold text-gray-200 mb-6 flex items-center gap-2">
+                    <Music2 size={24} className="text-spotify-green" />
+                    Your Sonic Signature
+                </h3>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {topTracks.map((track, i) => (
+                        <motion.div
+                            key={track.id}
+                            initial={{ x: -20, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            transition={{ delay: i * 0.1 }}
+                            className="group flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-default hover:border-spotify-green/30 hover:shadow-[0_0_20px_rgba(29,185,84,0.1)]"
+                        >
+                            <span className="text-2xl font-black text-white/20 w-8 text-center">{i + 1}</span>
+                            <img src={track.album.images[0]?.url} alt={track.name} className="w-16 h-16 rounded-xl shadow-lg group-hover:scale-105 transition-transform" />
+                            <div className="flex-1 min-w-0">
+                                <h4 className="text-lg font-bold text-white truncate">{track.name}</h4>
+                                <p className="text-sm text-gray-400 truncate">{track.artists.map(a => a.name).join(', ')}</p>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </section>
+
             <EventTagModal
                 isOpen={isTagging}
                 onClose={() => setIsTagging(false)}
