@@ -314,7 +314,7 @@ export default function Dashboard() {
                     setIsTagging(false);
                 }}
             />
-        </div>
+        </motion.div>
     );
 }
 
