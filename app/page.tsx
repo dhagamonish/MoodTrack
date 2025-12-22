@@ -3,7 +3,6 @@ import { HowItWorks } from "@/components/HowItWorks";
 import { DemoSection } from "@/components/DemoSection";
 import { FeaturesSection } from "@/components/FeaturesSection";
 import { TechnicalSection } from "@/components/TechnicalSection";
-import { ScreensGallery } from "@/components/ScreensGallery";
 import { FinalCTA } from "@/components/FinalCTA";
 import { Footer } from "@/components/Footer";
 
@@ -15,7 +14,6 @@ export default function Home() {
             <DemoSection />
             <FeaturesSection />
             <TechnicalSection />
-            <ScreensGallery />
             <FinalCTA />
             <Footer />
         </main>

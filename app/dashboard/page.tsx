@@ -166,9 +166,29 @@ export default function Dashboard() {
     );
 
     return (
-        <div className="relative">
+        <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                    opacity: 1,
+                    transition: {
+                        staggerChildren: 0.15,
+                        delayChildren: 0.2
+                    }
+                }
+            }}
+            className="relative"
+        >
             {/* Header / Vibe Block */}
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+            <motion.header
+                variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 }
+                }}
+                className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12"
+            >
                 <div className="flex items-center gap-4">
                     {profile?.images?.[0]?.url ? (
                         <img src={profile.images[0].url} alt="Profile" className="w-16 h-16 rounded-3xl border-2 border-spotify-green shadow-glow" />
@@ -182,19 +202,31 @@ export default function Dashboard() {
                         <h1 className="text-3xl font-black text-white tracking-tighter">{profile?.display_name}</h1>
                     </div>
                 </div>
-            </header>
+            </motion.header>
 
             {/* Tier 1: Summary Cards */}
-            <section className="mb-12">
+            <motion.section
+                variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 }
+                }}
+                className="mb-12"
+            >
                 <SummaryCards
                     baseline={calculatePersonalBaseline(dailyMetrics)}
                     trend={dailyMetrics.length > 1 ? (dailyMetrics[dailyMetrics.length - 1].valence > dailyMetrics[dailyMetrics.length - 2].valence ? 'Improving' : 'Slightly Lower') : 'Stable'}
                     alert={insights.find(i => i.severity === 'high')?.title}
                 />
-            </section>
+            </motion.section>
 
             {/* Tier 2: Weekly Mood Chart + Mindful Reflection */}
-            <section className="grid lg:grid-cols-3 gap-8 mb-12">
+            <motion.section
+                variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 }
+                }}
+                className="grid lg:grid-cols-3 gap-8 mb-12"
+            >
                 <div className="lg:col-span-2 space-y-8">
                     <WeeklyMoodChart data={dailyMetrics} />
                     <MindfulReflection />
@@ -220,10 +252,16 @@ export default function Dashboard() {
                         )}
                     </div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Action Cards */}
-            <section className="mb-12">
+            <motion.section
+                variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 }
+                }}
+                className="mb-12"
+            >
                 <h3 className="text-xl font-black text-white mb-6 flex items-center gap-2">
                     <Sparkles className="text-spotify-green" size={20} />
                     Quick Actions
@@ -234,10 +272,16 @@ export default function Dashboard() {
                     onTagEvent={() => setIsTagging(true)}
                     onRefresh={() => window.location.reload()}
                 />
-            </section>
+            </motion.section>
 
             {/* Top Tracks / Sonic Signature */}
-            <section className="mb-12">
+            <motion.section
+                variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 }
+                }}
+                className="mb-12"
+            >
                 <h3 className="text-xl font-bold text-gray-200 mb-6 flex items-center gap-2">
                     <Music2 size={24} className="text-spotify-green" />
                     Your Sonic Signature
@@ -246,9 +290,9 @@ export default function Dashboard() {
                     {topTracks.map((track, i) => (
                         <motion.div
                             key={track.id}
-                            initial={{ x: -20, opacity: 0 }}
+                            initial={{ x: -10, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: i * 0.1 }}
+                            transition={{ delay: 1.2 + (i * 0.1) }}
                             className="group flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-default hover:border-spotify-green/30 hover:shadow-[0_0_20px_rgba(29,185,84,0.1)]"
                         >
                             <span className="text-2xl font-black text-white/20 w-8 text-center">{i + 1}</span>
@@ -260,7 +304,7 @@ export default function Dashboard() {
                         </motion.div>
                     ))}
                 </div>
-            </section>
+            </motion.section>
 
             <EventTagModal
                 isOpen={isTagging}

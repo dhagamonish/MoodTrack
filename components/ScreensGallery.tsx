@@ -1,12 +1,13 @@
 'use client'
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const screens = [
-    { id: 1, title: "Dashboard", color: "bg-spotify-green", rotate: -6 },
-    { id: 2, title: "Mood Insights", color: "bg-sunset-violet", rotate: 3 },
-    { id: 3, title: "Playlist Gen", color: "bg-sunset-orange", rotate: -4 },
-    { id: 4, title: "Trends", color: "bg-spotify-lime", rotate: 6 },
+    { id: 1, title: "Dashboard", image: "/gallery_dashboard.png", rotate: -6 },
+    { id: 2, title: "Mood Insights", image: "/gallery_insights.png", rotate: 3 },
+    { id: 3, title: "Playlist Gen", image: "/gallery_playlists.png", rotate: -4 },
+    { id: 4, title: "Trends", image: "/gallery_trends.png", rotate: 6 },
 ];
 
 export function ScreensGallery() {
@@ -37,23 +38,13 @@ export function ScreensGallery() {
                             }}
                             whileHover={{ scale: 1.1, rotate: 0, zIndex: 100 }}
                         >
-                            {/* Screen Content Mock */}
                             <div className="w-full h-full rounded-[32px] overflow-hidden bg-black relative">
-                                <div className="absolute top-0 w-full h-8 bg-black/50 backdrop-blur-md z-10 flex justify-center pt-2">
-                                    <div className="w-20 h-4 bg-black rounded-full" />
-                                </div>
-
-                                {/* Mock UI */}
-                                <div className="p-6 pt-12 space-y-6">
-                                    <div className="h-8 w-2/3 bg-gray-800 rounded-lg animate-pulse" />
-                                    <div className={`h-40 w-full rounded-2xl ${screen.color} opacity-20`} />
-                                    <div className="space-y-3">
-                                        <div className="h-16 w-full rounded-xl bg-white/10" />
-                                        <div className="h-16 w-full rounded-xl bg-white/10" />
-                                        <div className="h-16 w-full rounded-xl bg-white/10" />
-                                    </div>
-                                </div>
-
+                                <Image
+                                    src={screen.image}
+                                    alt={screen.title}
+                                    fill
+                                    className="object-cover"
+                                />
                                 <div className="absolute bottom-0 w-full h-24 bg-gradient-to-t from-black to-transparent" />
                             </div>
                         </motion.div>

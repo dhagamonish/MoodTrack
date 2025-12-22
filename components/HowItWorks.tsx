@@ -51,14 +51,35 @@ export function HowItWorks() {
                     How it <span className="text-spotify-green">Works</span>
                 </motion.h2>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={{
+                        hidden: { opacity: 0 },
+                        visible: {
+                            opacity: 1,
+                            transition: {
+                                staggerChildren: 0.2
+                            }
+                        }
+                    }}
+                    className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8"
+                >
                     {cards.map((card, index) => (
                         <motion.div
                             key={index}
-                            initial={{ opacity: 0, y: 50 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: card.delay, type: "spring", stiffness: 100 }}
+                            variants={{
+                                hidden: { opacity: 0, y: 30 },
+                                visible: {
+                                    opacity: 1,
+                                    y: 0,
+                                    transition: {
+                                        type: "spring",
+                                        stiffness: 100
+                                    }
+                                }
+                            }}
                             whileHover={{ scale: 1.05, rotate: 1 }}
                             className="tactile-card p-8 flex flex-col items-center text-center group border-t border-white/20"
                         >
@@ -74,7 +95,7 @@ export function HowItWorks() {
                             </div>
                         </motion.div>
                     ))}
-                </div>
+                </motion.div>
             </div>
         </section>
     )

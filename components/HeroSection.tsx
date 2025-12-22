@@ -46,11 +46,26 @@ export function HeroSection() {
 
             <div className="grid lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto z-10 w-full">
                 {/* Left Column: Text */}
-                <div className="flex flex-col gap-8 text-center lg:text-left">
+                <motion.div
+                    initial="hidden"
+                    animate="visible"
+                    variants={{
+                        hidden: { opacity: 0 },
+                        visible: {
+                            opacity: 1,
+                            transition: {
+                                staggerChildren: 0.2,
+                                delayChildren: 0.3
+                            }
+                        }
+                    }}
+                    className="flex flex-col gap-8 text-center lg:text-left"
+                >
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        variants={{
+                            hidden: { opacity: 0, y: 30 },
+                            visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+                        }}
                     >
                         <h1 className="text-7xl lg:text-[7rem] font-black leading-[0.9] text-white tracking-tighter text-tactile drop-shadow-2xl">
                             Spotify Wrapped <br />
@@ -63,18 +78,20 @@ export function HeroSection() {
                     </motion.div>
 
                     <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2, duration: 0.8 }}
+                        variants={{
+                            hidden: { opacity: 0, y: 20 },
+                            visible: { opacity: 1, y: 0, transition: { duration: 0.8 } }
+                        }}
                         className="text-xl lg:text-2xl text-gray-300 max-w-xl font-medium"
                     >
                         MoodTrack turns your listening history into emotional insights, stress patterns, and personalized recovery playlists. Continuous, private, and practical.
                     </motion.p>
 
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4, duration: 0.8 }}
+                        variants={{
+                            hidden: { opacity: 0, y: 20 },
+                            visible: { opacity: 1, y: 0, transition: { duration: 0.8 } }
+                        }}
                         className="flex flex-col sm:flex-row gap-6 items-center justify-center lg:justify-start"
                     >
                         <Button
@@ -92,7 +109,7 @@ export function HeroSection() {
                             <Play className="ml-3 w-6 h-6 fill-current group-hover:scale-110 transition-transform" />
                         </Button>
                     </motion.div>
-                </div>
+                </motion.div>
 
                 {/* Right Column: 3D Mockups */}
                 <div className="relative h-[600px] w-full perspective-1000 hidden lg:flex items-center justify-center">
