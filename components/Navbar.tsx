@@ -66,26 +66,29 @@ export function Navbar() {
             </nav>
 
             {/* Mobile Bottom Bar */}
-            <nav className="fixed bottom-0 left-0 right-0 z-50 flex md:hidden bg-black/80 backdrop-blur-2xl border-t border-white/10 px-6 pb-8 pt-4 justify-between items-center shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+            <nav
+                className="fixed bottom-0 left-0 right-0 z-[100] flex md:hidden bg-black/95 backdrop-blur-3xl border-t border-white/5 px-4 pt-3 justify-around items-center shadow-[0_-10px_30px_rgba(0,0,0,0.8)]"
+                style={{ paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}
+            >
                 {navItems.map((item) => {
                     const isActive = pathname === item.href;
                     return (
                         <Link
                             key={item.href}
                             href={item.href}
-                            className={`flex flex-col items-center gap-1 transition-all ${isActive ? 'text-spotify-green' : 'text-gray-500'}`}
+                            className={`flex flex-col items-center gap-1 transition-all flex-1 ${isActive ? 'text-spotify-green' : 'text-gray-500'}`}
                         >
-                            <item.icon size={24} strokeWidth={isActive ? 2.5 : 2} />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">{item.name}</span>
+                            <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+                            <span className="text-[9px] font-black uppercase tracking-tighter">{item.name}</span>
                         </Link>
                     );
                 })}
                 <Link
                     href="/dashboard/settings"
-                    className={`flex flex-col items-center gap-1 transition-all ${pathname === '/dashboard/settings' ? 'text-spotify-green' : 'text-gray-500'}`}
+                    className={`flex flex-col items-center gap-1 transition-all flex-1 ${pathname === '/dashboard/settings' ? 'text-spotify-green' : 'text-gray-500'}`}
                 >
-                    <Settings size={24} strokeWidth={pathname === '/dashboard/settings' ? 2.5 : 2} />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Settings</span>
+                    <Settings size={22} strokeWidth={pathname === '/dashboard/settings' ? 2.5 : 2} />
+                    <span className="text-[9px] font-black uppercase tracking-tighter">Settings</span>
                 </Link>
             </nav>
         </>

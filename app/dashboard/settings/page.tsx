@@ -31,7 +31,14 @@ export default function SettingsPage() {
                                     <p className="text-sm text-gray-400">Connected as MD</p>
                                 </div>
                             </div>
-                            <Button variant="ghost" className="text-red-400 hover:bg-red-500/10 rounded-2xl font-bold">
+                            <Button
+                                variant="ghost"
+                                onClick={() => {
+                                    localStorage.removeItem('spotify_token');
+                                    window.location.href = '/';
+                                }}
+                                className="text-red-400 hover:bg-red-500/10 rounded-2xl font-bold"
+                            >
                                 Disconnect
                             </Button>
                         </div>
@@ -54,7 +61,16 @@ export default function SettingsPage() {
                             </div>
                             <ChevronRight size={20} className="text-gray-600 group-hover:text-white transition-colors" />
                         </button>
-                        <button className="w-full h-20 px-8 flex items-center justify-between hover:bg-white/5 transition-colors group">
+                        <button
+                            onClick={() => {
+                                if (confirm("Are you sure? This will delete all your local insights and history. This action cannot be undone.")) {
+                                    localStorage.clear();
+                                    alert("All local data has been cleared.");
+                                    window.location.href = '/';
+                                }
+                            }}
+                            className="w-full h-20 px-8 flex items-center justify-between hover:bg-white/5 transition-colors group"
+                        >
                             <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center text-red-400">
                                     <Trash2 size={20} />
@@ -84,7 +100,11 @@ export default function SettingsPage() {
                                 </p>
                             </div>
                         </div>
-                        <Button variant="ghost" className="w-full bg-white/5 text-white font-bold h-12 rounded-2xl border border-white/5">
+                        <Button
+                            variant="ghost"
+                            onClick={() => window.open('https://www.spotify.com/privacy', '_blank')}
+                            className="w-full bg-white/5 text-white font-bold h-12 rounded-2xl border border-white/5"
+                        >
                             Read Full Privacy Policy
                         </Button>
                     </div>

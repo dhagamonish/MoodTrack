@@ -9,6 +9,13 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 export const metadata: Metadata = {
     title: 'MoodTrack | Music-Based Mental Wellness',
     description: 'Analyze your Spotify listening habits to reveal emotional patterns.',
+    manifest: '/manifest.json',
+    themeColor: '#0a0a0a',
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: 'black-translucent',
+        title: 'MoodTrack',
+    },
 }
 
 export default function RootLayout({

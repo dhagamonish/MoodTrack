@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 export default function PlaylistsPage() {
     const [playlists, setPlaylists] = useState([
         { id: 1, name: "Mood Recovery Mix", mood: "Uplifting", created: "2h ago", image: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=400&h=400&fit=crop" },
-        { id: 2, name: "Calm Evenings", mood: "Relaxing", created: "Yesterday", image: "https://images.unsplash.com/photo-1544690356-91223e74be8d?w=400&h=400&fit=crop" },
+        { id: 2, name: "Calm Evenings", mood: "Relaxing", created: "Yesterday", image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=400&fit=crop" },
         { id: 3, name: "Energy Reset", mood: "High Energy", created: "3 days ago", image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop" },
     ]);
 

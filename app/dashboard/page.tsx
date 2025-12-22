@@ -280,26 +280,28 @@ export default function Dashboard() {
                     hidden: { opacity: 0, y: 20 },
                     visible: { opacity: 1, y: 0 }
                 }}
-                className="mb-12"
+                className="mb-32" // Added more bottom space for nav bar on mobile
             >
                 <h3 className="text-xl font-bold text-gray-200 mb-6 flex items-center gap-2">
                     <Music2 size={24} className="text-spotify-green" />
                     Your Sonic Signature
                 </h3>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid gap-4">
                     {topTracks.map((track, i) => (
                         <motion.div
                             key={track.id}
                             initial={{ x: -10, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ delay: 1.2 + (i * 0.1) }}
-                            className="group flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-default hover:border-spotify-green/30 hover:shadow-[0_0_20px_rgba(29,185,84,0.1)]"
+                            className="group flex items-center gap-5 p-4 rounded-[24px] bg-white/5 border border-white/5 hover:bg-white/10 transition-all cursor-default"
                         >
-                            <span className="text-2xl font-black text-white/20 w-8 text-center">{i + 1}</span>
-                            <img src={track.album.images[0]?.url} alt={track.name} className="w-16 h-16 rounded-xl shadow-lg group-hover:scale-105 transition-transform" />
+                            <span className="text-4xl font-black text-white/5 w-10 text-center select-none">{i + 1}</span>
+                            <div className="relative w-16 h-16 shrink-0">
+                                <img src={track.album.images[0]?.url} alt={track.name} className="w-full h-full rounded-2xl shadow-xl group-hover:scale-105 transition-transform object-cover" />
+                            </div>
                             <div className="flex-1 min-w-0">
-                                <h4 className="text-lg font-bold text-white truncate">{track.name}</h4>
-                                <p className="text-sm text-gray-400 truncate">{track.artists.map(a => a.name).join(', ')}</p>
+                                <h4 className="text-lg font-black text-white truncate drop-shadow-sm">{track.name}</h4>
+                                <p className="text-sm text-gray-400 truncate font-semibold">{track.artists.map(a => a.name).join(', ')}</p>
                             </div>
                         </motion.div>
                     ))}
