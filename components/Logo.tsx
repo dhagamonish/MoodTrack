@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -7,11 +6,11 @@ import { motion } from 'framer-motion';
 
 export function Logo() {
     return (
-        <Link href="/" className="absolute top-8 left-8 z-[100] flex items-center group">
+        <Link href="/" className="absolute top-5 left-8 z-[100] flex items-center group">
             <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="relative w-[220px] h-[55px]"
+                className="relative w-[210px] h-[52px]"
             >
                 <Image
                     src="/logo.png"
