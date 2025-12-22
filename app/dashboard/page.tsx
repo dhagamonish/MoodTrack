@@ -4,9 +4,13 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
-import { Music2, User, LogOut, Activity, RefreshCw } from 'lucide-react';
+import { Music2, User, LogOut, Activity, RefreshCw, Sparkles } from 'lucide-react';
 import { WeeklyMoodChart } from '@/components/WeeklyMoodChart';
 import { InsightCard } from '@/components/InsightCard';
+import { MindfulReflection } from '@/components/MindfulReflection';
+import { SummaryCards } from '@/components/SummaryCards';
+import { ActionCards } from '@/components/ActionCards';
+import { EventTagModal } from '@/components/EventTagModal';
 import { fetchRecentlyPlayed, fetchAudioFeatures, createPlaylist, fetchRecommendations } from '@/lib/spotify';
 import { processListeningHistory, calculateDailyMetrics, detectPatterns, DailyMetric, Insight, calculatePersonalBaseline, PersonalBaseline } from '@/lib/analytics';
 
@@ -30,6 +34,7 @@ export default function Dashboard() {
     const [dailyMetrics, setDailyMetrics] = useState<DailyMetric[]>([]);
     const [insights, setInsights] = useState<Insight[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isTagging, setIsTagging] = useState(false);
     const [mood, setMood] = useState({ label: "Analyzing...", color: "from-gray-500 to-gray-700", description: "Connecting to your sonic consciousness..." });
 
     useEffect(() => {
@@ -161,62 +166,45 @@ export default function Dashboard() {
     );
 
     return (
-        <div className="min-h-screen bg-neutral-950 text-white p-6 pb-20 overflow-x-hidden relative">
-            <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-spotify-green/10 to-transparent pointer-events-none" />
-
-            <div className="max-w-5xl mx-auto relative z-10">
-                <header className="flex items-center justify-between mb-12">
-                    <div className="flex items-center gap-4">
-                        {profile?.images?.[0]?.url ? (
-                            <img src={profile.images[0].url} alt="Profile" className="w-12 h-12 rounded-full border-2 border-spotify-green shadow-glow" />
-                        ) : (
-                            <div className="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center border-2 border-white/10">
-                                <User size={20} />
-                            </div>
-                        )}
-                        <div>
-                            <h2 className="text-sm text-gray-400 uppercase tracking-widest font-bold">Welcome back</h2>
-                            <h1 className="text-2xl font-black text-white">{profile?.display_name}</h1>
+        <div className="relative">
+            {/* Header / Vibe Block */}
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                <div className="flex items-center gap-4">
+                    {profile?.images?.[0]?.url ? (
+                        <img src={profile.images[0].url} alt="Profile" className="w-16 h-16 rounded-3xl border-2 border-spotify-green shadow-glow" />
+                    ) : (
+                        <div className="w-16 h-16 rounded-3xl bg-gray-800 flex items-center justify-center border-2 border-white/10">
+                            <User size={24} />
                         </div>
+                    )}
+                    <div>
+                        <h2 className="text-xs text-gray-500 uppercase tracking-widest font-black">Logged in as</h2>
+                        <h1 className="text-3xl font-black text-white tracking-tighter">{profile?.display_name}</h1>
                     </div>
-                    <Button size="sm" variant="ghost" onClick={handleLogout} className="text-gray-400 hover:text-white hover:bg-white/5">
-                        <LogOut size={16} className="mr-2" />
-                        Disconnect
-                    </Button>
-                </header>
+                </div>
+            </header>
 
-                {/* Hero Mood Card */}
-                <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    className={`rounded-[40px] p-10 bg-gradient-to-br ${mood.color} relative overflow-hidden shadow-tactile mb-12 border border-white/10`}
-                >
-                    <div className="absolute inset-0 bg-noise opacity-20" />
-                    <div className="relative z-10">
-                        <div className="flex items-center gap-3 mb-2 opacity-80">
-                            <Activity size={20} />
-                            <span className="font-bold tracking-wider text-sm uppercase">Current Resonance</span>
-                        </div>
-                        <h2 className="text-5xl md:text-7xl font-black text-white drop-shadow-lg tracking-tighter">
-                            {mood.label}
-                        </h2>
-                        <p className="mt-4 text-white/80 max-w-lg text-lg font-medium leading-relaxed italic">
-                            "{mood.description}"
-                        </p>
-                    </div>
-                </motion.div>
+            {/* Tier 1: Summary Cards */}
+            <section className="mb-12">
+                <SummaryCards
+                    baseline={calculatePersonalBaseline(dailyMetrics)}
+                    trend={dailyMetrics.length > 1 ? (dailyMetrics[dailyMetrics.length - 1].valence > dailyMetrics[dailyMetrics.length - 2].valence ? 'Improving' : 'Slightly Lower') : 'Stable'}
+                    alert={insights.find(i => i.severity === 'high')?.title}
+                />
+            </section>
 
-                {/* Main Grid: Chart + Insights */}
-                <div className="grid lg:grid-cols-3 gap-8 mb-12">
-                    <div className="lg:col-span-2">
-                        <WeeklyMoodChart data={dailyMetrics} />
-                    </div>
-
-                    <div className="space-y-6">
-                        <h3 className="text-xl font-bold text-gray-200 flex items-center gap-2">
-                            <SparklesWrapper />
-                            Insights
-                        </h3>
+            {/* Tier 2: Weekly Mood Chart + Mindful Reflection */}
+            <section className="grid lg:grid-cols-3 gap-8 mb-12">
+                <div className="lg:col-span-2 space-y-8">
+                    <WeeklyMoodChart data={dailyMetrics} />
+                    <MindfulReflection />
+                </div>
+                <div className="space-y-6">
+                    <h3 className="text-xl font-bold text-gray-200 flex items-center gap-2">
+                        <RefreshCw size={20} className="text-spotify-green" />
+                        Key Insights
+                    </h3>
+                    <div className="space-y-4">
                         {insights.length > 0 ? (
                             insights.map((insight, i) => (
                                 <InsightCard
@@ -226,43 +214,40 @@ export default function Dashboard() {
                                 />
                             ))
                         ) : (
-                            <div className="p-6 rounded-3xl bg-white/5 border border-white/10 text-gray-400 text-center">
-                                No specific patterns detected yet. Keep listening!
+                            <div className="p-8 rounded-[32px] bg-white/5 border border-white/10 text-gray-400 text-center italic">
+                                Exploring your sonic patterns...
                             </div>
                         )}
                     </div>
                 </div>
+            </section>
 
-                {/* Top Tracks */}
-                <div>
-                    <h3 className="text-xl font-bold text-gray-200 mb-6 flex items-center gap-2">
-                        <Music2 size={24} className="text-spotify-green" />
-                        Your Sonic Signature
-                    </h3>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {topTracks.map((track, i) => (
-                            <motion.div
-                                key={track.id}
-                                initial={{ x: -20, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                transition={{ delay: i * 0.1 }}
-                                className="group flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-default hover:border-spotify-green/30 hover:shadow-[0_0_20px_rgba(29,185,84,0.1)]"
-                            >
-                                <span className="text-2xl font-black text-white/20 w-8 text-center">{i + 1}</span>
-                                <img src={track.album.images[0]?.url} alt={track.name} className="w-16 h-16 rounded-xl shadow-lg group-hover:scale-105 transition-transform" />
-                                <div className="flex-1 min-w-0">
-                                    <h4 className="text-lg font-bold text-white truncate">{track.name}</h4>
-                                    <p className="text-sm text-gray-400 truncate">{track.artists.map(a => a.name).join(', ')}</p>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            </div>
+            {/* Action Cards */}
+            <section className="mb-12">
+                <h3 className="text-xl font-black text-white mb-6 flex items-center gap-2">
+                    <Sparkles className="text-spotify-green" size={20} />
+                    Quick Actions
+                </h3>
+                <ActionCards
+                    onGenerate={() => insights[0] && handleAction(insights[0])}
+                    onViewInsights={() => router.push('/dashboard/insights')}
+                    onTagEvent={() => setIsTagging(true)}
+                    onRefresh={() => window.location.reload()}
+                />
+            </section>
+
+            <EventTagModal
+                isOpen={isTagging}
+                onClose={() => setIsTagging(false)}
+                onTag={(tag: string) => {
+                    console.log('Tagged:', tag);
+                    setIsTagging(false);
+                }}
+            />
         </div>
     );
 }
 
 function SparklesWrapper() {
-    return <RefreshCw size={20} className="text-spotify-green" />;
+    return <Sparkles className="text-spotify-green" size={20} />;
 }

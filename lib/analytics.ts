@@ -96,15 +96,18 @@ export function calculateDailyMetrics(richHistory: any[]): DailyMetric[] {
 
 export function detectPatterns(metrics: DailyMetric[], richHistory: any[], baseline: PersonalBaseline): Insight[] {
     const insights: Insight[] = [];
-    if (metrics.length < 2) return insights;
+    if (metrics.length === 0) return insights;
 
     const recent = metrics[metrics.length - 1];
-    const prev = metrics[metrics.length - 2];
+    const prev = metrics.length > 1 ? metrics[metrics.length - 2] : null;
+
+    const effectiveStdValence = baseline.stdValence || 0.15;
+    const effectiveStdEnergy = baseline.stdEnergy || 0.15;
+    const valenceThreshold = baseline.avgValence - effectiveStdValence;
+    const energyThreshold = baseline.avgEnergy + effectiveStdEnergy;
 
     // 1. Low Valence Streak (Sadness)
-    // Threshold: Valence is 1 standard deviation below average for 2 days
-    const valenceThreshold = baseline.avgValence - baseline.stdValence;
-    if (recent.valence < valenceThreshold && prev.valence < valenceThreshold) {
+    if (prev && recent.valence < valenceThreshold && prev.valence < valenceThreshold) {
         insights.push({
             type: 'streak',
             title: "Low Mood Streak",
@@ -115,7 +118,6 @@ export function detectPatterns(metrics: DailyMetric[], richHistory: any[], basel
     }
 
     // 2. Stress Signature (High Energy + Low Valence + Repetition)
-    const energyThreshold = baseline.avgEnergy + baseline.stdEnergy;
     const isHighEnergy = recent.energy > energyThreshold;
     const isLowValence = recent.valence < valenceThreshold;
 
@@ -160,17 +162,18 @@ export function detectPatterns(metrics: DailyMetric[], richHistory: any[], basel
     }
 
     // 4. Emotional Regulation (Recovery)
-    // If previous was low valence/high energy (stress) and current is low energy/medium valence
-    const wasStressed = prev.valence < valenceThreshold && prev.energy > energyThreshold;
-    const isRecovering = recent.energy < baseline.avgEnergy && recent.valence >= valenceThreshold;
+    if (prev) {
+        const wasStressed = prev.valence < valenceThreshold && prev.energy > energyThreshold;
+        const isRecovering = recent.energy < baseline.avgEnergy && recent.valence >= valenceThreshold;
 
-    if (wasStressed && isRecovering) {
-        insights.push({
-            type: 'recovery',
-            title: "Emotional Regulation",
-            description: "You've successfully shifted from high-stress music to calmer, more balanced tones. This shows positive emotional regulation.",
-            severity: 'low'
-        });
+        if (wasStressed && isRecovering) {
+            insights.push({
+                type: 'recovery',
+                title: "Emotional Regulation",
+                description: "You've successfully shifted from high-stress music to calmer, more balanced tones. This shows positive emotional regulation.",
+                severity: 'low'
+            });
+        }
     }
 
     // 5. Chill Vibes (Low Energy, High Valence)
@@ -179,6 +182,17 @@ export function detectPatterns(metrics: DailyMetric[], richHistory: any[], basel
             type: 'chill',
             title: "Mindful Harmony",
             description: "You're currently in a peaceful, positive headspace. Your music reflects a state of content relaxation.",
+        });
+    }
+
+    // 6. Balanced Foundation (If nothing else is detected)
+    if (insights.length === 0) {
+        insights.push({
+            type: 'none',
+            title: "Balanced Foundation",
+            description: "Your listening patterns are currently stable and balanced. You're using music as a consistent anchor for your emotions.",
+            actionLabel: "Maintain the Flow",
+            actionParams: { targetValence: 0.5, targetEnergy: 0.5 }
         });
     }
 

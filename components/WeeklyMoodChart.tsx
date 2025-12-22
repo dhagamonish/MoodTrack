@@ -16,13 +16,24 @@ interface WeeklyMoodChartProps {
 export function WeeklyMoodChart({ data }: WeeklyMoodChartProps) {
     if (!data || data.length === 0) {
         return (
-            <div className="h-64 flex items-center justify-center text-gray-500 bg-white/5 rounded-3xl border border-white/10">
-                Not enough data yet. Keep listening!
+            <div className="h-64 flex items-center justify-center text-gray-500 bg-white/5 rounded-3xl border border-white/10 p-8 text-center">
+                <div>
+                    <h4 className="text-white font-bold mb-2">Syncing your sonic history...</h4>
+                    <p className="text-sm max-w-xs mx-auto">We need data from multiple days to map your emotional timeline. Keep listening, and check back tomorrow!</p>
+                </div>
             </div>
         );
     }
 
-    const formattedData = data.map(d => ({
+    let chartData = data;
+    if (data.length === 1) {
+        // Create a ghost point to make the chart line visible
+        const ghostDate = new Date(data[0].date);
+        ghostDate.setDate(ghostDate.getDate() - 1);
+        chartData = [{ ...data[0], date: ghostDate.toISOString(), valence: data[0].valence, energy: data[0].energy }, ...data];
+    }
+
+    const formattedData = chartData.map(d => ({
         ...d,
         day: new Date(d.date).toLocaleDateString('en-US', { weekday: 'short' }),
         valencePercent: Math.round(d.valence * 100),

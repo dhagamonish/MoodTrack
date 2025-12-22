@@ -54,7 +54,7 @@ function CallbackContent() {
                     try {
                         localStorage.setItem('spotify_token', data.access_token);
                         localStorage.removeItem('spotify_code_verifier');
-                        router.push('/dashboard');
+                        router.push('/onboarding');
                     } catch (storageError) {
                         alert("Browser Storage Error: Could not save login session.");
                     }
