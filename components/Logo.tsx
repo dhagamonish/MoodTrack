@@ -11,7 +11,7 @@ export function Logo() {
             <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="relative w-[280px] h-[70px]"
+                className="relative w-[220px] h-[55px]"
             >
                 <Image
                     src="/logo.png"
