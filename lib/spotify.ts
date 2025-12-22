@@ -66,9 +66,13 @@ export async function createPlaylist(token: string, userId: string, name: string
     return playlist;
 }
 
-export async function fetchRecommendations(token: string, seedTracks: string[], targetValence: number, targetEnergy: number, limit: number = 20) {
+export async function fetchRecommendations(token: string, seedTracks: string[], targetValence: number, targetEnergy: number, targetAcousticness?: number, limit: number = 20) {
     const seeds = seedTracks.slice(0, 5).join(','); // Max 5 seeds
-    const res = await fetch(`${SPOTIFY_API_BASE}/recommendations?seed_tracks=${seeds}&target_valence=${targetValence}&target_energy=${targetEnergy}&limit=${limit}`, {
+    let url = `${SPOTIFY_API_BASE}/recommendations?seed_tracks=${seeds}&target_valence=${targetValence}&target_energy=${targetEnergy}&limit=${limit}`;
+    if (targetAcousticness !== undefined) {
+        url += `&target_acousticness=${targetAcousticness}`;
+    }
+    const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` }
     });
     if (res.ok) return res.json();

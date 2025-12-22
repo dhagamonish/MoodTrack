@@ -137,7 +137,8 @@ export default function Dashboard() {
                     token,
                     seedTracks,
                     insight.actionParams.targetValence,
-                    insight.actionParams.targetEnergy
+                    insight.actionParams.targetEnergy,
+                    insight.actionParams.targetAcousticness
                 );
 
                 if (recs && recs.tracks) {
@@ -216,6 +217,8 @@ export default function Dashboard() {
                     baseline={calculatePersonalBaseline(dailyMetrics)}
                     trend={dailyMetrics.length > 1 ? (dailyMetrics[dailyMetrics.length - 1].valence > dailyMetrics[dailyMetrics.length - 2].valence ? 'Improving' : 'Slightly Lower') : 'Stable'}
                     alert={insights.find(i => i.severity === 'high')?.title}
+                    avgDiversity={calculatePersonalBaseline(dailyMetrics).avgDiversity}
+                    totalListeningTime={dailyMetrics.length > 0 ? dailyMetrics[dailyMetrics.length - 1].listeningTimeMinutes : 0}
                 />
             </motion.section>
 

@@ -8,9 +8,11 @@ interface SummaryCardsProps {
     baseline: PersonalBaseline;
     trend: string;
     alert?: string;
+    avgDiversity: number;
+    totalListeningTime: number;
 }
 
-export function SummaryCards({ baseline, trend, alert }: SummaryCardsProps) {
+export function SummaryCards({ baseline, trend, alert, avgDiversity, totalListeningTime }: SummaryCardsProps) {
     return (
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <motion.div
@@ -37,11 +39,11 @@ export function SummaryCards({ baseline, trend, alert }: SummaryCardsProps) {
                     <div className="w-10 h-10 rounded-2xl bg-sunset-violet/20 flex items-center justify-center text-sunset-violet">
                         <Activity size={20} />
                     </div>
-                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Energy</span>
+                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Efficiency</span>
                 </div>
                 <div>
-                    <h4 className="text-2xl font-black text-white">{Math.round(baseline.avgEnergy * 100)}%</h4>
-                    <p className="text-xs text-gray-400">Listening Intensity</p>
+                    <h4 className="text-2xl font-black text-white">{Math.round(totalListeningTime)}m</h4>
+                    <p className="text-xs text-gray-400">Total Listening Time</p>
                 </div>
             </motion.div>
 
@@ -53,19 +55,19 @@ export function SummaryCards({ baseline, trend, alert }: SummaryCardsProps) {
                     <div className="w-10 h-10 rounded-2xl bg-spotify-lime/20 flex items-center justify-center text-spotify-lime">
                         <TrendingUp size={20} />
                     </div>
-                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Trend</span>
+                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Discovery</span>
                 </div>
                 <div>
-                    <h4 className="text-lg font-bold text-white leading-tight">{trend}</h4>
-                    <p className="text-xs text-gray-400">Weekly Movement</p>
+                    <h4 className="text-2xl font-black text-white">{Math.round(avgDiversity * 100)}%</h4>
+                    <p className="text-xs text-gray-400">Sonic Diversity</p>
                 </div>
             </motion.div>
 
             <motion.div
                 whileHover={{ y: -5 }}
                 className={`p-6 rounded-[32px] border flex flex-col justify-between ${alert
-                        ? 'bg-red-500/10 border-red-500/20 text-red-400'
-                        : 'bg-white/5 border-white/10 text-gray-400'
+                    ? 'bg-red-500/10 border-red-500/20 text-red-400'
+                    : 'bg-white/5 border-white/10 text-gray-400'
                     }`}
             >
                 <div className="flex justify-between items-start mb-4">
