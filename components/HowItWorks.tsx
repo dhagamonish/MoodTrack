@@ -1,32 +1,40 @@
 'use client'
 
 import { motion } from "framer-motion";
-import { ShieldCheck, Activity, Smile } from "lucide-react";
+import { ShieldCheck, Activity, Smile, Music2 } from "lucide-react";
 
 const cards = [
     {
         title: "Connect Spotify",
-        description: "Secure OAuth 2.0 PKCE login grants access to your listening history.",
+        description: "Secure login grants access to your listening history. No passwords shared.",
         icon: ShieldCheck,
         color: "text-spotify-green",
-        badge: "OAuth 2.0 PKCE",
+        badge: "Private & Secure",
         delay: 0
     },
     {
-        title: "Analyze Emotion",
-        description: "We process audio features: valence, energy, and tempo to map your mood.",
+        title: "Analyze Behavior",
+        description: "We extract audio features from your history: valence, energy, and tempo.",
         icon: Activity,
         color: "text-sunset-violet",
-        badge: "Audio Features API",
+        badge: "Sonic Analysis",
+        delay: 0.1
+    },
+    {
+        title: "Detect Patterns",
+        description: "Identify stress signatures, burnout signals, and emotional trends.",
+        icon: Smile,
+        color: "text-sunset-orange",
+        badge: "Pattern Detection",
         delay: 0.2
     },
     {
-        title: "Improve Mood",
-        description: "Get personalized recovery playlists to lift your spirits instantly.",
-        icon: Smile,
-        color: "text-sunset-orange",
-        badge: "Recommendation Engine",
-        delay: 0.4
+        title: "Suggest Actions",
+        description: "Get personalized recovery playlists and mindful listening routines.",
+        icon: Music2,
+        color: "text-spotify-lime",
+        badge: "Recovery Tools",
+        delay: 0.3
     }
 ];
 
@@ -43,7 +51,7 @@ export function HowItWorks() {
                     How it <span className="text-spotify-green">Works</span>
                 </motion.h2>
 
-                <div className="grid md:grid-cols-3 gap-8">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     {cards.map((card, index) => (
                         <motion.div
                             key={index}

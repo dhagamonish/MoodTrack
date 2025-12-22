@@ -21,7 +21,7 @@ export function HeroSection() {
 
         localStorage.setItem('spotify_code_verifier', codeVerifier);
 
-        const scope = 'user-read-private user-read-email user-top-read user-read-recently-played';
+        const scope = 'user-read-private user-read-email user-top-read user-read-recently-played playlist-modify-private user-library-read';
         const params = new URLSearchParams({
             response_type: 'code',
             client_id: clientId,
@@ -30,6 +30,10 @@ export function HeroSection() {
             code_challenge_method: 'S256',
             code_challenge: codeChallenge,
         });
+
+        // DEBUG: Verify exactly what URI is being sent
+        console.log("Redirecting to:", redirectUri);
+        // alert(`Debug: Redirecting to ${redirectUri}`); 
 
         window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
     };
@@ -49,12 +53,12 @@ export function HeroSection() {
                         transition={{ duration: 0.8, ease: "easeOut" }}
                     >
                         <h1 className="text-7xl lg:text-[7rem] font-black leading-[0.9] text-white tracking-tighter text-tactile drop-shadow-2xl">
-                            Feel your <br />
+                            Spotify Wrapped <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-spotify-green via-spotify-lime to-sunset-violet">
-                                emotions
+                                for your mental
                             </span>
                             <br />
-                            through music.
+                            wellbeing.
                         </h1>
                     </motion.div>
 
@@ -64,7 +68,7 @@ export function HeroSection() {
                         transition={{ delay: 0.2, duration: 0.8 }}
                         className="text-xl lg:text-2xl text-gray-300 max-w-xl font-medium"
                     >
-                        MoodTrack analyzes your Spotify listening habits to reveal emotional patterns and guide your wellbeing.
+                        MoodTrack turns your listening history into emotional insights, stress patterns, and personalized recovery playlists. Continuous, private, and practical.
                     </motion.p>
 
                     <motion.div
