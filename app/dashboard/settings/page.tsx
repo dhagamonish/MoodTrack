@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Settings, User, Shield, Database, LogOut, ChevronRight, Export, Trash2, Download } from 'lucide-react';
+import { Settings, User, Shield, Database, LogOut, ChevronRight, Trash2, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function SettingsPage() {
